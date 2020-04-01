@@ -1,11 +1,29 @@
 package helferlein
 
 import (
+	"bufio"
 	"errors"
 	"io"
 	"net/http"
 	"os"
 )
+
+// ReadLines reads a whole file into memory
+// and returns a slice of its lines.
+func ReadLines(path string) ([]string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
+}
 
 // DownloadFiles downloads a file to a given path
 func DownloadFile(url string, filepath string) error {
